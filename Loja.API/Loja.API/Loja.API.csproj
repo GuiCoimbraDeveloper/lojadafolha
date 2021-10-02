@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net5.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);1591</NoWarn>
+    <UserSecretsId>8e68ad95-fca3-495c-a093-0a2c7180c2fd</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Loja.Application\Loja.Application.csproj" />
+    <ProjectReference Include="..\Loja.Domain\Loja.Domain.csproj" />
+    <ProjectReference Include="..\Loja.Infra\Loja.Infra.csproj" />
+  </ItemGroup>
+
+</Project>
