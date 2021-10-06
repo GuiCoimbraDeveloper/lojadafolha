@@ -25,6 +25,7 @@ namespace Loja.Application.Services
                 Desconto = entity.Desconto,
                 Valor = entity.Valor,
                 ValorTotal = entity.ValorTotal,
+                ClienteId = entity.ClienteId,
                 PedidoItens = entity.PedidoItens.Select(item =>
                 new PedidoItens
                 {

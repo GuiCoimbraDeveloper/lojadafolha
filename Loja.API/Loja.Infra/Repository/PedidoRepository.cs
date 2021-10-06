@@ -2,6 +2,7 @@
 using Loja.Domain.Repositories;
 using Loja.Infra.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,26 +20,39 @@ namespace Loja.Infra.Repository
 
         public async Task Add(Pedido entity)
         {
-            if (entity.Id == 0)
+            try
             {
-                _dbDataContext.Pedidos.Attach(entity);
+                if (entity.Id == 0)
+                {
+                    //EntityEntry dbEntityEntry = _dbDataContext.Entry(entity);
+                    _dbDataContext.Entry(entity).State = EntityState.Added;
+                    await _dbDataContext.PedidoItens.AddRangeAsync(entity.PedidoItens);
+                    await _dbDataContext.Pedidos.AddAsync(entity);
+                }
+                else
+                {
+                    var aux = await _dbDataContext.Pedidos.FirstOrDefaultAsync(item => item.DeletedAt == null && item.Id == entity.Id);
+
+                    if (aux == null)
+                        throw new Exception("Pedido não encontrado para atualizar");
+
+
+
+                    aux.Numero = entity.Numero;
+                    aux.Data = entity.Data;
+                    aux.ClienteId = entity.ClienteId;
+                    aux.Valor = entity.Valor;
+                    aux.Desconto = entity.Desconto;
+                    aux.ValorTotal = entity.ValorTotal;
+                    aux.AlteredAt = DateTime.Now;
+                }
+                await _dbDataContext.SaveChangesAsync();
             }
-            else
+            catch (Exception er)
             {
-                var aux = await _dbDataContext.Pedidos.FirstOrDefaultAsync(item => item.DeletedAt == null && item.Id == entity.Id);
-
-                if (aux == null)
-                    throw new Exception("Pedido não encontrado para atualizar");
-
-                aux.Numero = entity.Numero;
-                aux.Data = entity.Data;
-                aux.ClienteId = entity.ClienteId;
-                aux.Valor = entity.Valor;
-                aux.Desconto = entity.Desconto;
-                aux.ValorTotal = entity.ValorTotal;
-                aux.AlteredAt = DateTime.Now;
+                throw er;
             }
-            await _dbDataContext.SaveChangesAsync();
+           
         }
 
         public async Task<ICollection<Pedido>> GetAll()
