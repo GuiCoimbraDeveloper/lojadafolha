@@ -20,39 +20,30 @@ namespace Loja.Infra.Repository
 
         public async Task Add(Pedido entity)
         {
-            try
+
+            if (entity.Id == 0)
             {
-                if (entity.Id == 0)
-                {
-                    //EntityEntry dbEntityEntry = _dbDataContext.Entry(entity);
-                    _dbDataContext.Entry(entity).State = EntityState.Added;
-                    await _dbDataContext.PedidoItens.AddRangeAsync(entity.PedidoItens);
-                    await _dbDataContext.Pedidos.AddAsync(entity);
-                }
-                else
-                {
-                    var aux = await _dbDataContext.Pedidos.FirstOrDefaultAsync(item => item.DeletedAt == null && item.Id == entity.Id);
-
-                    if (aux == null)
-                        throw new Exception("Pedido não encontrado para atualizar");
-
-
-
-                    aux.Numero = entity.Numero;
-                    aux.Data = entity.Data;
-                    aux.ClienteId = entity.ClienteId;
-                    aux.Valor = entity.Valor;
-                    aux.Desconto = entity.Desconto;
-                    aux.ValorTotal = entity.ValorTotal;
-                    aux.AlteredAt = DateTime.Now;
-                }
-                await _dbDataContext.SaveChangesAsync();
+                //EntityEntry dbEntityEntry = _dbDataContext.Entry(entity);
+                //_dbDataContext.Entry(entity).State = EntityState.Added;
+                //await _dbDataContext.PedidoItens.AddRangeAsync(entity.PedidoItens);
+                await _dbDataContext.Pedidos.AddAsync(entity);
             }
-            catch (Exception er)
+            else
             {
-                throw er;
+                var aux = await _dbDataContext.Pedidos.FirstOrDefaultAsync(item => item.DeletedAt == null && item.Id == entity.Id);
+
+                if (aux == null)
+                    throw new Exception("Pedido não encontrado para atualizar");
+
+                aux.Numero = entity.Numero;
+                aux.Data = entity.Data;
+                aux.ClienteId = entity.ClienteId;
+                aux.Valor = entity.Valor;
+                aux.Desconto = entity.Desconto;
+                aux.ValorTotal = entity.ValorTotal;
+                aux.AlteredAt = DateTime.Now;
             }
-           
+            await _dbDataContext.SaveChangesAsync();
         }
 
         public async Task<ICollection<Pedido>> GetAll()
