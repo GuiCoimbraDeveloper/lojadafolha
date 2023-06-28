@@ -2,7 +2,6 @@
 using Loja.Domain.Repositories;
 using Loja.Infra.Data;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,9 +22,6 @@ namespace Loja.Infra.Repository
 
             if (entity.Id == 0)
             {
-                //EntityEntry dbEntityEntry = _dbDataContext.Entry(entity);
-                //_dbDataContext.Entry(entity).State = EntityState.Added;
-                //await _dbDataContext.PedidoItens.AddRangeAsync(entity.PedidoItens);
                 await _dbDataContext.Pedidos.AddAsync(entity);
             }
             else
